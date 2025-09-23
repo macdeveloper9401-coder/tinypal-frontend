@@ -13,9 +13,19 @@ buildscript {
     }
     dependencies {
         classpath("com.android.tools.build:gradle")
-        classpath("com.facebook.react:react-native-gradle-plugin")
+        classpath("com.facebook.react:react-native-gradle-plugin:8.1.1")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin")
     }
 }
 
 apply plugin: "com.facebook.react.rootproject"
+
+tasks.register("startApi", Exec) {
+    workingDir rootProject.projectDir
+    def os = org.gradle.internal.os.OperatingSystem.current()
+    if (os.isWindows()) {
+        commandLine "powershell", "-Command", "Start-Process node -ArgumentList 'service' -WindowStyle Hidden"
+    } else {
+        commandLine "sh", "-c", "nohup node service >/dev/null 2>&1 &"
+    }
+}
